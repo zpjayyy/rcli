@@ -3,7 +3,7 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+use std::{fs::File, path::Path};
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -56,18 +56,25 @@ fn main() {
     println!("{:?}", args);
 
     match args.option {
-        Options::Csv { input, .. } => {
-            read_csv(&input).unwrap();
+        Options::Csv { input, output, .. } => {
+            let players = read_csv(&input).unwrap();
+            write_json(&players, &output).unwrap();
         }
     }
 }
 
-fn read_csv(file_path: &str) -> Result<()> {
+fn read_csv(file_path: &str) -> Result<Vec<Player>> {
     let mut reader = csv::Reader::from_path(file_path)?;
     let result: Vec<Player> = reader
         .deserialize::<Player>()
         .collect::<Result<Vec<Player>, csv::Error>>()?;
     println!("{:?}", result);
+    Ok(result)
+}
+
+fn write_json(data: &[Player], file_path: &str) -> Result<()> {
+    let file = File::create(file_path)?;
+    serde_json::to_writer_pretty(file, data)?;
     Ok(())
 }
 

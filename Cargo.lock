@@ -1326,6 +1326,7 @@ dependencies = [
  "csv",
  "duckdb",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
