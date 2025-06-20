@@ -1072,6 +1072,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "rcli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "csv",
+ "duckdb",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "redox_syscall"
 version = "0.5.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1315,18 +1327,6 @@ dependencies = [
  "filetime",
  "libc",
  "xattr",
-]
-
-[[package]]
-name = "template"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "csv",
- "duckdb",
- "serde",
- "serde_json",
 ]
 
 [[package]]

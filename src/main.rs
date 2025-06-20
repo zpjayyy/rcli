@@ -1,55 +1,10 @@
 // rcli csv -i input.csv -o output.json  --header -d ";"
 
-use anyhow::Result;
-use clap::{Parser, Subcommand};
-use serde::{Deserialize, Serialize};
-use std::{fs::File, path::Path};
-
-#[derive(Debug, Parser)]
-#[command(version, about, long_about = None)]
-struct Cli {
-    #[command(subcommand)]
-    option: Options,
-}
-
-#[derive(Debug, Subcommand)]
-enum Options {
-    Csv {
-        #[arg(short, long, value_parser = validate_file_exists)]
-        input: String,
-
-        #[arg(short, long, default_value = "output.json")]
-        output: String,
-
-        #[arg(long, default_value = "false")]
-        header: bool,
-
-        #[arg(short, long, default_value = ",")]
-        delimiter: String,
-    },
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Player {
-    #[serde(rename = "Name")]
-    name: String,
-    #[serde(rename = "Position")]
-    position: String,
-    #[serde(rename = "DOB")]
-    dob: String,
-    #[serde(rename = "Nationality")]
-    nationality: String,
-    #[serde(rename = "Kit Number")]
-    kit: u8,
-}
-
-fn validate_file_exists(file_path: &str) -> Result<String, String> {
-    if Path::new(&file_path).exists() {
-        Ok(file_path.to_string())
-    } else {
-        Err(format!("File {} does not exist", file_path))
-    }
-}
+use clap::Parser;
+use rcli::Cli;
+use rcli::Options;
+use rcli::read_csv;
+use rcli::write_json;
 
 fn main() {
     let args = Cli::parse();
@@ -61,21 +16,6 @@ fn main() {
             write_json(&players, &output).unwrap();
         }
     }
-}
-
-fn read_csv(file_path: &str) -> Result<Vec<Player>> {
-    let mut reader = csv::Reader::from_path(file_path)?;
-    let result: Vec<Player> = reader
-        .deserialize::<Player>()
-        .collect::<Result<Vec<Player>, csv::Error>>()?;
-    println!("{:?}", result);
-    Ok(result)
-}
-
-fn write_json(data: &[Player], file_path: &str) -> Result<()> {
-    let file = File::create(file_path)?;
-    serde_json::to_writer_pretty(file, data)?;
-    Ok(())
 }
 
 #[cfg(test)]
