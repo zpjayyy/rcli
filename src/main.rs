@@ -3,8 +3,7 @@
 use clap::Parser;
 use rcli::Cli;
 use rcli::Options;
-use rcli::read_csv;
-use rcli::write_json;
+use rcli::process_csv;
 
 fn main() {
     let args = Cli::parse();
@@ -12,8 +11,7 @@ fn main() {
 
     match args.option {
         Options::Csv { input, output, .. } => {
-            let players = read_csv(&input).unwrap();
-            write_json(&players, &output).unwrap();
+            process_csv(&input, &output).unwrap();
         }
     }
 }
