@@ -1,32 +1,23 @@
-use std::{collections::HashMap, fs::File, iter::zip};
+use std::fs::{self};
 
 use anyhow::Result;
 
 pub fn process_csv(input: &str, output: &str) -> Result<()> {
-    let result = read_csv(input).unwrap();
-    write_json(&result, output).unwrap();
-    Ok(())
-}
-
-pub fn read_csv(file_path: &str) -> Result<Vec<HashMap<String, String>>> {
-    let mut reader = csv::Reader::from_path(file_path)?;
+    let mut reader = csv::Reader::from_path(input)?;
     let headers = reader.headers()?.clone();
 
-    let mut result = Vec::new();
+    let mut ret = Vec::new();
 
     for record in reader.records() {
         let record = record?;
-        let map: HashMap<String, String> = zip(headers.iter(), record.iter())
-            .map(|(h, v)| (h.to_string(), v.to_string()))
-            .collect();
-        result.push(map);
+        let json_value = headers
+            .iter()
+            .zip(record.iter())
+            .collect::<serde_json::Value>();
+        ret.push(json_value);
     }
-    println!("{:?}", result);
-    Ok(result)
-}
 
-pub fn write_json(data: &Vec<HashMap<String, String>>, file_path: &str) -> Result<()> {
-    let file = File::create(file_path)?;
-    serde_json::to_writer_pretty(file, data)?;
+    let content = serde_json::to_string(&ret)?;
+    fs::write(output, content)?;
     Ok(())
 }
