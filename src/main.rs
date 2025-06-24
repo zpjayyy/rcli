@@ -10,8 +10,13 @@ fn main() {
     println!("{:?}", args);
 
     match args.option {
-        Options::Csv { input, output, .. } => {
-            process_csv(&input, &output).unwrap();
+        Options::Csv {
+            input,
+            output,
+            output_format,
+            ..
+        } => {
+            process_csv(&input, &output, output_format).unwrap();
         }
     }
 }
