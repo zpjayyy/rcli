@@ -1,23 +1,20 @@
 // rcli csv -i input.csv -o output.json  --header -d ";"
 
 use clap::Parser;
-use rcli::Cli;
-use rcli::Options;
+use rcli::Opts;
+use rcli::SubCommand;
+use rcli::gen_password;
 use rcli::process_csv;
 
 fn main() {
-    let args = Cli::parse();
+    let args = Opts::parse();
     println!("{:?}", args);
 
     match args.option {
-        Options::Csv {
-            input,
-            output,
-            output_format,
-            ..
-        } => {
-            process_csv(&input, &output, output_format).unwrap();
+        SubCommand::Csv(opts) => {
+            process_csv(opts).unwrap();
         }
+        SubCommand::GenPass(opts) => gen_password(opts).unwrap(),
     }
 }
 

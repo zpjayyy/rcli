@@ -1,11 +1,11 @@
 use std::fs::{self};
 
-use anyhow::Result;
+use anyhow::{Ok, Result};
 
-use crate::opts::OutputFormat;
+use crate::opts::{CsvOpts, OutputFormat};
 
-pub fn process_csv(input: &str, output: &str, output_format: OutputFormat) -> Result<()> {
-    let mut reader = csv::Reader::from_path(input)?;
+pub fn process_csv(opts: CsvOpts) -> Result<()> {
+    let mut reader = csv::Reader::from_path(opts.input)?;
     let headers = reader.headers()?.clone();
 
     let mut ret = Vec::new();
@@ -19,9 +19,9 @@ pub fn process_csv(input: &str, output: &str, output_format: OutputFormat) -> Re
         ret.push(json_value);
     }
 
-    let file_path = format!("{}.{}", output, output_format);
+    let file_path = format!("{}.{}", opts.output, opts.output_format);
 
-    let content = match output_format {
+    let content = match opts.output_format {
         OutputFormat::Json => serde_json::to_string(&ret)?,
         OutputFormat::Yaml => serde_yaml::to_string(&ret)?,
         _ => return Err(anyhow::anyhow!("Unsupported output format")),

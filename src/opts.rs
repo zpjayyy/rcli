@@ -4,29 +4,51 @@ use std::{fmt::Display, path::Path, str::FromStr};
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
-pub struct Cli {
+pub struct Opts {
     #[command(subcommand)]
-    pub option: Options,
+    pub option: SubCommand,
 }
 
 #[derive(Debug, Subcommand)]
-pub enum Options {
-    Csv {
-        #[arg(short, long, value_parser = validate_file_exists)]
-        input: String,
+pub enum SubCommand {
+    Csv(CsvOpts),
+    GenPass(GenPassOpts),
+}
 
-        #[arg(short, long, default_value = "output")]
-        output: String,
+#[derive(Debug, Parser)]
+pub struct CsvOpts {
+    #[arg(short, long, value_parser = validate_file_exists)]
+    pub input: String,
 
-        #[arg(long, default_value = "json")]
-        output_format: OutputFormat,
+    #[arg(short, long, default_value = "output")]
+    pub output: String,
 
-        #[arg(long, default_value = "false")]
-        header: bool,
+    #[arg(long, default_value = "json")]
+    pub output_format: OutputFormat,
 
-        #[arg(short, long, default_value = ",")]
-        delimiter: String,
-    },
+    #[arg(long, default_value = "false")]
+    pub header: bool,
+
+    #[arg(short, long, default_value = ",")]
+    pub delimiter: String,
+}
+
+#[derive(Debug, Parser)]
+pub struct GenPassOpts {
+    #[arg(short, long, default_value = "16")]
+    pub length: u8,
+
+    #[arg(long, default_value = "true")]
+    pub uppercase: bool,
+
+    #[arg(long, default_value = "true")]
+    pub lowercase: bool,
+
+    #[arg(long, default_value = "true")]
+    pub number: bool,
+
+    #[arg(long, default_value = "true")]
+    pub symbol: bool,
 }
 
 #[derive(Debug, Clone, Copy)]
