@@ -1,19 +1,9 @@
 use anyhow::Error;
-use clap::{Parser, Subcommand};
-use std::{fmt::Display, path::Path, str::FromStr};
+use std::{fmt::Display, str::FromStr};
 
-#[derive(Debug, Parser)]
-#[command(version, about, long_about = None)]
-pub struct Opts {
-    #[command(subcommand)]
-    pub option: SubCommand,
-}
+use clap::{Parser, arg};
 
-#[derive(Debug, Subcommand)]
-pub enum SubCommand {
-    Csv(CsvOpts),
-    GenPass(GenPassOpts),
-}
+use crate::cli::opts::validate_file_exists;
 
 #[derive(Debug, Parser)]
 pub struct CsvOpts {
@@ -31,24 +21,6 @@ pub struct CsvOpts {
 
     #[arg(short, long, default_value = ",")]
     pub delimiter: String,
-}
-
-#[derive(Debug, Parser)]
-pub struct GenPassOpts {
-    #[arg(short, long, default_value = "16")]
-    pub length: u8,
-
-    #[arg(long, default_value = "true")]
-    pub uppercase: bool,
-
-    #[arg(long, default_value = "true")]
-    pub lowercase: bool,
-
-    #[arg(long, default_value = "true")]
-    pub number: bool,
-
-    #[arg(long, default_value = "true")]
-    pub symbol: bool,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -79,13 +51,5 @@ impl Display for OutputFormat {
             OutputFormat::Yaml => "yaml",
         };
         write!(f, "{}", s)
-    }
-}
-
-fn validate_file_exists(file_path: &str) -> Result<String, String> {
-    if Path::new(&file_path).exists() {
-        Ok(file_path.to_string())
-    } else {
-        Err(format!("File {} does not exist", file_path))
     }
 }

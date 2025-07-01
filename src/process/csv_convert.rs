@@ -2,7 +2,7 @@ use std::fs::{self};
 
 use anyhow::{Ok, Result};
 
-use crate::opts::{CsvOpts, OutputFormat};
+use crate::{CsvOpts, OutputFormat};
 
 pub fn process_csv(opts: CsvOpts) -> Result<()> {
     let mut reader = csv::Reader::from_path(opts.input)?;

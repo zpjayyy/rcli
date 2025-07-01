@@ -2,7 +2,7 @@ use anyhow::Result;
 use rand::seq::{IndexedRandom, SliceRandom};
 use zxcvbn::zxcvbn;
 
-use crate::opts::GenPassOpts;
+use crate::GenPassOpts;
 
 const LOWERCASE: &[u8] = b"abcdefghijkmnpqrstuvwxyz";
 const UPPERCASE: &[u8] = b"ABCDEFGHJKMNPQRSTUVWXYZ";
