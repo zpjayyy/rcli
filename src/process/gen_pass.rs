@@ -2,14 +2,14 @@ use anyhow::Result;
 use rand::seq::{IndexedRandom, SliceRandom};
 use zxcvbn::zxcvbn;
 
-use crate::GenPassOpts;
+use crate::GenPassSubCommand;
 
 const LOWERCASE: &[u8] = b"abcdefghijkmnpqrstuvwxyz";
 const UPPERCASE: &[u8] = b"ABCDEFGHJKMNPQRSTUVWXYZ";
 const NUMBER: &[u8] = b"2345678";
 const SYMBOL: &[u8] = b"!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
-pub fn gen_password(opts: GenPassOpts) -> Result<()> {
+pub fn gen_password(opts: GenPassSubCommand) -> Result<()> {
     let mut rng = rand::rng();
     let mut password = Vec::new();
     let mut chars = Vec::new();

@@ -1,8 +1,9 @@
 use clap::{Parser, Subcommand};
 use std::path::Path;
 
-use super::csv_opts::CsvOpts;
-use super::gen_pass_opts::GenPassOpts;
+use super::base64::Base64SubCommand;
+use super::csv::CsvSubCommand;
+use super::gen_pass::GenPassSubCommand;
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -13,8 +14,12 @@ pub struct Opts {
 
 #[derive(Debug, Subcommand)]
 pub enum SubCommand {
-    Csv(CsvOpts),
-    GenPass(GenPassOpts),
+    #[command(name = "csv", about = "CSV operations")]
+    Csv(CsvSubCommand),
+    #[command(name = "gen-pass", about = "Generate a random password")]
+    GenPass(GenPassSubCommand),
+    #[command[subcommand]]
+    Base64(Base64SubCommand),
 }
 
 pub fn validate_file_exists(file_path: &str) -> Result<String, String> {

@@ -2,9 +2,9 @@ use std::fs::{self};
 
 use anyhow::{Ok, Result};
 
-use crate::{CsvOpts, OutputFormat};
+use crate::{CsvSubCommand, OutputFormat};
 
-pub fn process_csv(opts: CsvOpts) -> Result<()> {
+pub fn process_csv(opts: CsvSubCommand) -> Result<()> {
     let mut reader = csv::Reader::from_path(opts.input)?;
     let headers = reader.headers()?.clone();
 

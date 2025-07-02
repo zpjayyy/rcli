@@ -1,7 +1,7 @@
 use clap::{Parser, arg};
 
 #[derive(Debug, Parser)]
-pub struct GenPassOpts {
+pub struct GenPassSubCommand {
     #[arg(short, long, default_value = "16")]
     pub length: u8,
 

@@ -6,7 +6,7 @@ use clap::{Parser, arg};
 use crate::cli::opts::validate_file_exists;
 
 #[derive(Debug, Parser)]
-pub struct CsvOpts {
+pub struct CsvSubCommand {
     #[arg(short, long, value_parser = validate_file_exists)]
     pub input: String,
 

@@ -1,3 +1,4 @@
-pub mod csv_opts;
-pub mod gen_pass_opts;
+pub mod base64;
+pub mod csv;
+pub mod gen_pass;
 pub mod opts;
