@@ -4,6 +4,8 @@ use clap::Parser;
 use rcli::Base64SubCommand;
 use rcli::Opts;
 use rcli::SubCommand;
+use rcli::decode;
+use rcli::encode;
 use rcli::gen_password;
 use rcli::process_csv;
 
@@ -18,10 +20,12 @@ fn main() {
         SubCommand::GenPass(opts) => gen_password(opts).unwrap(),
         SubCommand::Base64(opts) => match opts {
             Base64SubCommand::Encode(opts) => {
-                println!("{:?}", opts);
+                let result = encode(opts).unwrap();
+                println!("{}", result);
             }
             Base64SubCommand::Decode(opts) => {
-                print!("{:?}", opts)
+                let result = decode(opts).unwrap();
+                println!("{}", result);
             }
         },
     }

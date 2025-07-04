@@ -13,35 +13,35 @@ pub enum Base64SubCommand {
 
 #[derive(Debug, Parser)]
 pub struct EncodeOpts {
-    #[arg(long, value_parser = validate_input_exists)]
+    #[arg(long, default_value = "-", value_parser = validate_input_exists)]
     pub input: String,
 
     #[arg(long, default_value = "standard")]
-    pub format: Format,
+    pub format: Base64Format,
 }
 
 #[derive(Debug, Parser)]
 pub struct DecodeOpts {
-    #[arg(long, value_parser = validate_input_exists)]
+    #[arg(long, default_value = "-", value_parser = validate_input_exists)]
     pub input: String,
 
     #[arg(long, default_value = "standard")]
-    pub format: Format,
+    pub format: Base64Format,
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum Format {
+pub enum Base64Format {
     Standard,
     UrlSafe,
 }
 
-impl FromStr for Format {
+impl FromStr for Base64Format {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_lowercase().as_str() {
-            "standard" => Ok(Format::Standard),
-            "urlsafe" => Ok(Format::UrlSafe),
+            "standard" => Ok(Base64Format::Standard),
+            "urlsafe" => Ok(Base64Format::UrlSafe),
             _ => Err(anyhow::anyhow!("Invalid format")),
         }
     }
