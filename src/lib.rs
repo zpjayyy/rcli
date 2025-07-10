@@ -12,6 +12,9 @@ pub use cli::csv::OutputFormat;
 pub use cli::gen_pass::GenPassSubCommand;
 pub use cli::opts::Opts;
 pub use cli::opts::SubCommand;
+pub use cli::text::GenerateKeyOpts;
+pub use cli::text::TextSubCommand;
+pub use process::text::generate_key;
 
 pub use cli::base64::DecodeOpts;
 pub use cli::base64::EncodeOpts;

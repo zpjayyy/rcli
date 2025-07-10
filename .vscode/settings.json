@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["rcli", "urlsafe", "zxcvbn"]
+  "cSpell.words": [
+    "csprng",
+    "dalek",
+    "rcli",
+    "rngs",
+    "serde",
+    "urlsafe",
+    "zxcvbn"
+  ]
 }

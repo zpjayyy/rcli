@@ -4,6 +4,7 @@ use std::path::Path;
 use super::base64::Base64SubCommand;
 use super::csv::CsvSubCommand;
 use super::gen_pass::GenPassSubCommand;
+use super::text::TextSubCommand;
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -20,6 +21,8 @@ pub enum SubCommand {
     GenPass(GenPassSubCommand),
     #[command[subcommand]]
     Base64(Base64SubCommand),
+    #[command(subcommand)]
+    Text(TextSubCommand),
 }
 
 pub fn validate_file_exists(file_path: &str) -> Result<String, String> {
