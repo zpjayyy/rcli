@@ -2,10 +2,11 @@
   "cSpell.words": [
     "csprng",
     "dalek",
+    "pkcs",
     "rcli",
     "rngs",
     "serde",
     "urlsafe",
     "zxcvbn"
-  ]
+]
 }
