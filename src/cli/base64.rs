@@ -1,5 +1,6 @@
-use std::{path::Path, str::FromStr};
+use std::str::FromStr;
 
+use crate::utils::input_util::validate_input_exists;
 use anyhow::Error;
 use clap::{Parser, Subcommand, arg};
 
@@ -44,13 +45,5 @@ impl FromStr for Base64Format {
             "urlsafe" => Ok(Base64Format::UrlSafe),
             _ => Err(anyhow::anyhow!("Invalid format")),
         }
-    }
-}
-
-fn validate_input_exists(input: &str) -> Result<String, String> {
-    if input == "-" || Path::new(input).exists() {
-        Ok(input.to_string())
-    } else {
-        Err(format!("Input file {} does not exist", input))
     }
 }

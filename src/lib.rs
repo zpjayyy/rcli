@@ -18,3 +18,4 @@ pub use process::text::generate_key;
 
 pub use cli::base64::DecodeOpts;
 pub use cli::base64::EncodeOpts;
+pub mod utils;
