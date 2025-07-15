@@ -5,6 +5,9 @@ pub use process::base64::decode;
 pub use process::base64::encode;
 pub use process::csv_convert::process_csv;
 pub use process::gen_pass::gen_password;
+pub use process::text::generate_key;
+pub use process::text::sign;
+pub use process::text::verify;
 
 pub use cli::base64::Base64SubCommand;
 pub use cli::csv::CsvSubCommand;
@@ -14,7 +17,6 @@ pub use cli::opts::Opts;
 pub use cli::opts::SubCommand;
 pub use cli::text::GenerateKeyOpts;
 pub use cli::text::TextSubCommand;
-pub use process::text::generate_key;
 
 pub use cli::base64::DecodeOpts;
 pub use cli::base64::EncodeOpts;

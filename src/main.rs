@@ -10,6 +10,8 @@ use rcli::encode;
 use rcli::gen_password;
 use rcli::generate_key;
 use rcli::process_csv;
+use rcli::sign;
+use rcli::verify;
 
 fn main() {
     let args = Opts::parse();
@@ -33,9 +35,13 @@ fn main() {
         SubCommand::Text(opts) => match opts {
             TextSubCommand::Sign(opts) => {
                 println!("{:?}", opts);
+                let signature = sign(opts).unwrap();
+                println!("{}", signature);
             }
             TextSubCommand::Verify(opts) => {
                 println!("{:?}", opts);
+                let result = verify(opts);
+                print!("{:?}", result);
             }
             TextSubCommand::GenerateKey(opts) => {
                 println!("{:?}", opts);
