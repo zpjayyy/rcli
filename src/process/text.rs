@@ -31,27 +31,31 @@ pub fn generate_key(opts: GenerateKeyOpts) -> Result<SigningKey> {
 }
 
 pub fn sign(sign_opts: SignOpts) -> Result<String> {
-    let signature = sign_opts.format.sign(&sign_opts.input, &sign_opts.key)?;
+    let signature = sign_opts
+        .format
+        .sign(&sign_opts.input, &sign_opts.private_key)?;
     Ok(signature)
 }
 
 pub fn verify(verify_opts: VerifyOpts) -> Result<bool> {
-    let result =
-        verify_opts
-            .format
-            .verify(&verify_opts.input, &verify_opts.signature, &verify_opts.key)?;
+    let result = verify_opts.format.verify(
+        &verify_opts.input,
+        &verify_opts.signature,
+        &verify_opts.public_key,
+    )?;
     Ok(result)
 }
 
 trait Sign {
-    fn sign(&self, input: &str, key: &str) -> Result<String>;
+    fn sign(&self, input: &str, key: &Option<String>) -> Result<String>;
 }
 
 impl Sign for SignFormat {
-    fn sign(&self, input: &str, key: &str) -> Result<String> {
+    fn sign(&self, input: &str, key: &Option<String>) -> Result<String> {
         match &self {
             SignFormat::ED25519 => {
-                let key_pem = fs::read_to_string(key)?;
+                let private_key = key.as_ref().expect("ED25519 must provide a private key");
+                let key_pem = fs::read_to_string(private_key)?;
                 let mut signing_key = SigningKey::from_pkcs8_pem(&key_pem).expect("get key error");
                 let signature = signing_key.sign(input.as_bytes());
                 Ok(signature.to_string())
@@ -62,17 +66,25 @@ impl Sign for SignFormat {
 }
 
 trait Verify {
-    fn verify(&self, input: &str, signature: &str, key: &str) -> Result<bool>;
+    fn verify(&self, input: &str, signature: &Option<String>, key: &Option<String>)
+    -> Result<bool>;
 }
 
 impl Verify for SignFormat {
-    fn verify(&self, input: &str, signature: &str, key: &str) -> Result<bool> {
+    fn verify(
+        &self,
+        input: &str,
+        signature: &Option<String>,
+        key: &Option<String>,
+    ) -> Result<bool> {
         match &self {
             SignFormat::ED25519 => {
-                let key_pem = fs::read_to_string(key)?;
+                let public_key = key.as_ref().expect("ED25519 must provide public key");
+                let signature_content = signature.as_ref().expect("ED25519 must provide signature");
+                let key_pem = fs::read_to_string(public_key)?;
                 let verify_key =
                     VerifyingKey::from_public_key_pem(&key_pem).expect("get key error");
-                let sign_bytes = hex::decode(signature)?;
+                let sign_bytes = hex::decode(signature_content)?;
                 let sign_array: [u8; 64] = sign_bytes
                     .try_into()
                     .map_err(|_| anyhow::anyhow!("invalid signature length"))?;

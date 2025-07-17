@@ -21,7 +21,7 @@ pub struct SignOpts {
     pub input: String,
 
     #[arg(long)]
-    pub key: String,
+    pub private_key: Option<String>,
 
     #[arg(long)]
     pub format: SignFormat,
@@ -33,10 +33,10 @@ pub struct VerifyOpts {
     pub input: String,
 
     #[arg(long)]
-    pub signature: String,
+    pub signature: Option<String>,
 
     #[arg(long)]
-    pub key: String,
+    pub public_key: Option<String>,
 
     #[arg(long)]
     pub format: SignFormat,

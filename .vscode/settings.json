@@ -6,7 +6,8 @@
     "rcli",
     "rngs",
     "serde",
+    "spki",
     "urlsafe",
     "zxcvbn"
-]
+  ]
 }
