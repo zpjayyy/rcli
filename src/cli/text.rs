@@ -33,7 +33,7 @@ pub struct VerifyOpts {
     pub input: String,
 
     #[arg(long)]
-    pub signature: Option<String>,
+    pub signature: String,
 
     #[arg(long)]
     pub public_key: Option<String>,
