@@ -9,25 +9,11 @@ use std::path::Path;
 
 use crate::GenerateKeyOpts;
 use crate::cli::text::{SignFormat, SignOpts, VerifyOpts};
+use crate::process::gen_pass::gen_pass;
 
-pub fn generate_key(opts: GenerateKeyOpts) -> Result<SigningKey> {
-    let base = Path::new(&opts.output);
-    let private_path = base.with_file_name("private_pem");
-    let public_path = base.with_file_name("public_pem");
-
-    let mut csprng = OsRng.unwrap_err();
-    let signing_key = SigningKey::generate(&mut csprng);
-    let pem = signing_key
-        .to_pkcs8_pem(LineEnding::LF)
-        .expect("Failed to convert to PEM");
-    fs::write(private_path, pem)?;
-
-    let verify_key = signing_key.verifying_key();
-    let public_pem = verify_key
-        .to_public_key_pem(LineEnding::LF)
-        .expect("Failed to convert to PEM");
-    fs::write(public_path, public_pem)?;
-    Ok(signing_key)
+pub fn generate_key(opts: GenerateKeyOpts) -> Result<String> {
+    let result = opts.format.gen_key(&opts.output)?;
+    Ok(result)
 }
 
 pub fn sign(sign_opts: SignOpts) -> Result<String> {
@@ -94,6 +80,46 @@ impl Verify for SignFormat {
                 let hash = blake3::hash(input.as_bytes());
                 let verify_result = hash.to_string() == signature;
                 Ok(verify_result)
+            }
+        }
+    }
+}
+
+trait GenKey {
+    fn gen_key(&self, output: &str) -> Result<String>;
+}
+
+impl GenKey for SignFormat {
+    fn gen_key(&self, output: &str) -> Result<String> {
+        let dir = Path::new(&output);
+        match &self {
+            SignFormat::BLAKE3 => {
+                let key_path = dir.join("key");
+                let key = gen_pass(32, true, true, true, true)?;
+                fs::write(&key_path, key)?;
+                Ok(format!("key: {}", &key_path.display()))
+            }
+            SignFormat::ED25519 => {
+                let private_path = dir.join("private_pem");
+                let public_path = dir.join("public_pem");
+
+                let mut csprng = OsRng.unwrap_err();
+                let signing_key = SigningKey::generate(&mut csprng);
+                let pem = signing_key
+                    .to_pkcs8_pem(LineEnding::LF)
+                    .expect("Failed to convert to PEM");
+                fs::write(&private_path, pem)?;
+
+                let verify_key = signing_key.verifying_key();
+                let public_pem = verify_key
+                    .to_public_key_pem(LineEnding::LF)
+                    .expect("Failed to convert to PEM");
+                fs::write(&public_path, public_pem)?;
+                Ok(format!(
+                    "private key: {}\npublic key: {}",
+                    &private_path.display(),
+                    &public_path.display()
+                ))
             }
         }
     }

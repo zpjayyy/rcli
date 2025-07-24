@@ -46,6 +46,9 @@ pub struct VerifyOpts {
 pub struct GenerateKeyOpts {
     #[arg(short, long, value_parser = validate_output_exists)]
     pub output: String,
+
+    #[arg(long)]
+    pub format: SignFormat,
 }
 
 #[derive(Debug, Clone, Copy)]

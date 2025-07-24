@@ -21,7 +21,10 @@ fn main() {
         SubCommand::Csv(opts) => {
             process_csv(opts).unwrap();
         }
-        SubCommand::GenPass(opts) => gen_password(opts).unwrap(),
+        SubCommand::GenPass(opts) => {
+            let result = gen_password(opts).unwrap();
+            print!("{}", result);
+        }
         SubCommand::Base64(opts) => match opts {
             Base64SubCommand::Encode(opts) => {
                 let result = encode(opts).unwrap();
