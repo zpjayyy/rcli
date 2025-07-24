@@ -3,7 +3,7 @@ use std::str::FromStr;
 use anyhow::Error;
 use clap::{Parser, Subcommand};
 
-use crate::utils::input_util::validate_input_exists;
+use crate::utils::input_util::{validate_input_exists, validate_output_exists};
 
 #[derive(Debug, Subcommand)]
 pub enum TextSubCommand {
@@ -44,7 +44,7 @@ pub struct VerifyOpts {
 
 #[derive(Debug, Parser)]
 pub struct GenerateKeyOpts {
-    #[arg(short, long)]
+    #[arg(short, long, value_parser = validate_output_exists)]
     pub output: String,
 }
 
