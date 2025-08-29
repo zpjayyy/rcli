@@ -11,7 +11,7 @@ use std::fs;
 use std::path::Path;
 
 use crate::GenerateKeyOpts;
-use crate::cli::text::{SignFormat, SignOpts, VerifyOpts};
+use crate::cli::text::{DecryptOpts, EncryptOpts, SignFormat, SignOpts, VerifyOpts};
 use crate::process::gen_pass::gen_pass;
 
 pub fn generate_key(opts: GenerateKeyOpts) -> Result<String> {
@@ -33,6 +33,14 @@ pub fn verify(verify_opts: VerifyOpts) -> Result<bool> {
         &verify_opts.public_key,
     )?;
     Ok(result)
+}
+
+pub fn encrypt(_encrypt_opts: EncryptOpts) -> Result<String> {
+    todo!("Implement ChaCha20-Poly1305 encryption")
+}
+
+pub fn decrypt(_decrypt_opts: DecryptOpts) -> Result<String> {
+    todo!("Implement ChaCha20-Poly1305 decryption")
 }
 
 trait Sign {

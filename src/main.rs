@@ -6,7 +6,9 @@ use rcli::Opts;
 use rcli::SubCommand;
 use rcli::TextSubCommand;
 use rcli::decode;
+use rcli::decrypt;
 use rcli::encode;
+use rcli::encrypt;
 use rcli::gen_password;
 use rcli::generate_key;
 use rcli::process_csv;
@@ -49,6 +51,14 @@ fn main() {
             TextSubCommand::GenerateKey(opts) => {
                 println!("{:?}", opts);
                 let _ = generate_key(opts).unwrap();
+            }
+            TextSubCommand::Decrypt(opts) => {
+                let result = decrypt(opts).unwrap();
+                println!("{}", result);
+            }
+            TextSubCommand::Encrypt(opts) => {
+                let result = encrypt(opts).unwrap();
+                println!("{}", result);
             }
         },
     }
