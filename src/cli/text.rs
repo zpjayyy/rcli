@@ -55,6 +55,7 @@ pub struct GenerateKeyOpts {
 pub enum SignFormat {
     ED25519,
     BLAKE3,
+    Chacha,
 }
 
 impl FromStr for SignFormat {
@@ -64,6 +65,7 @@ impl FromStr for SignFormat {
         match s.to_lowercase().as_str() {
             "ed25519" => Ok(SignFormat::ED25519),
             "blake3" => Ok(SignFormat::BLAKE3),
+            "chacha" => Ok(SignFormat::Chacha),
             _ => Err(anyhow::anyhow!("Invalid format")),
         }
     }

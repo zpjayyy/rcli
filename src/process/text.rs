@@ -1,9 +1,12 @@
 use anyhow::{Ok, Result};
+use chacha20poly1305::ChaCha20Poly1305;
+use chacha20poly1305::aead::KeyInit;
 use ed25519_dalek::ed25519::signature::SignerMut;
 use ed25519_dalek::pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey};
 use ed25519_dalek::{Signature, VerifyingKey};
 use ed25519_dalek::{SigningKey, pkcs8::spki::der::pem::LineEnding};
 use rand::{TryRngCore, rngs::OsRng};
+use std::convert::TryInto;
 use std::fs;
 use std::path::Path;
 
@@ -50,6 +53,7 @@ impl Sign for SignFormat {
                 let hash = blake3::hash(input.as_bytes());
                 Ok(hash.to_string())
             }
+            SignFormat::Chacha => Ok("".to_string()),
         }
     }
 }
@@ -81,6 +85,7 @@ impl Verify for SignFormat {
                 let verify_result = hash.to_string() == signature;
                 Ok(verify_result)
             }
+            SignFormat::Chacha => Ok(true),
         }
     }
 }
@@ -120,6 +125,13 @@ impl GenKey for SignFormat {
                     &private_path.display(),
                     &public_path.display()
                 ))
+            }
+            SignFormat::Chacha => {
+                let key_path = dir.join("key");
+                let key =
+                    ChaCha20Poly1305::generate_key(&mut chacha20poly1305::aead::rand_core::OsRng);
+                fs::write(&key_path, key)?;
+                Ok(format!("key: {}", &key_path.display()))
             }
         }
     }
