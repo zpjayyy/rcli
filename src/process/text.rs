@@ -38,11 +38,10 @@ pub fn verify(verify_opts: VerifyOpts) -> Result<bool> {
 
 pub fn encrypt(encrypt_opts: EncryptOpts) -> Result<String> {
     let key_data = fs::read(&encrypt_opts.key)?;
+    let input_data = fs::read(&encrypt_opts.input)?;
     let cipher = ChaCha20Poly1305::new_from_slice(&key_data).unwrap();
     let nonce = ChaCha20Poly1305::generate_nonce(&mut chacha20poly1305::aead::rand_core::OsRng);
-    let cipher_text = cipher
-        .encrypt(&nonce, encrypt_opts.input.as_bytes())
-        .unwrap();
+    let cipher_text = cipher.encrypt(&nonce, input_data.as_slice()).unwrap();
 
     // 将nonce和密文组合在一起进行Base64编码
     let mut combined = Vec::new();

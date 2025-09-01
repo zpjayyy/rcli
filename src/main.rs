@@ -17,7 +17,6 @@ use rcli::verify;
 
 fn main() {
     let args = Opts::parse();
-    println!("{:?}", args);
 
     match args.option {
         SubCommand::Csv(opts) => {
@@ -54,10 +53,9 @@ fn main() {
             }
             TextSubCommand::Decrypt(opts) => {
                 let result = decrypt(opts).unwrap();
-                println!("{}", result);
+                print!("{}", result);
             }
             TextSubCommand::Encrypt(opts) => {
-                print!("{:?}", opts);
                 let result = encrypt(opts).unwrap();
                 println!("{}", result);
             }
