@@ -57,6 +57,7 @@ fn main() {
                 println!("{}", result);
             }
             TextSubCommand::Encrypt(opts) => {
+                print!("{:?}", opts);
                 let result = encrypt(opts).unwrap();
                 println!("{}", result);
             }

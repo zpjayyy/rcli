@@ -1,6 +1,7 @@
 use anyhow::{Ok, Result};
-use chacha20poly1305::ChaCha20Poly1305;
-use chacha20poly1305::aead::KeyInit;
+use base64::Engine;
+use chacha20poly1305::aead::{Aead, KeyInit};
+use chacha20poly1305::{AeadCore, ChaCha20Poly1305};
 use ed25519_dalek::ed25519::signature::SignerMut;
 use ed25519_dalek::pkcs8::{DecodePrivateKey, DecodePublicKey, EncodePrivateKey, EncodePublicKey};
 use ed25519_dalek::{Signature, VerifyingKey};
@@ -35,12 +36,43 @@ pub fn verify(verify_opts: VerifyOpts) -> Result<bool> {
     Ok(result)
 }
 
-pub fn encrypt(_encrypt_opts: EncryptOpts) -> Result<String> {
-    todo!("Implement ChaCha20-Poly1305 encryption")
+pub fn encrypt(encrypt_opts: EncryptOpts) -> Result<String> {
+    let key_data = fs::read(&encrypt_opts.key)?;
+    let cipher = ChaCha20Poly1305::new_from_slice(&key_data).unwrap();
+    let nonce = ChaCha20Poly1305::generate_nonce(&mut chacha20poly1305::aead::rand_core::OsRng);
+    let cipher_text = cipher
+        .encrypt(&nonce, encrypt_opts.input.as_bytes())
+        .unwrap();
+
+    // 将nonce和密文组合在一起进行Base64编码
+    let mut combined = Vec::new();
+    combined.extend_from_slice(&nonce);
+    combined.extend_from_slice(&cipher_text);
+
+    Ok(base64::engine::general_purpose::STANDARD.encode(combined))
 }
 
-pub fn decrypt(_decrypt_opts: DecryptOpts) -> Result<String> {
-    todo!("Implement ChaCha20-Poly1305 decryption")
+pub fn decrypt(decrypt_opts: DecryptOpts) -> Result<String> {
+    let key_data = fs::read(&decrypt_opts.key)?;
+    let cipher = ChaCha20Poly1305::new_from_slice(&key_data).unwrap();
+
+    // 读取Base64编码的密文
+    let cipher_text = fs::read_to_string(&decrypt_opts.input)?;
+    let cipher_bytes = base64::engine::general_purpose::STANDARD.decode(cipher_text.trim())?;
+
+    // 提取nonce（前12字节）和实际的密文
+    if cipher_bytes.len() < 12 {
+        return Err(anyhow::anyhow!("Invalid cipher text: too short"));
+    }
+
+    let nonce = &cipher_bytes[..12];
+    let actual_cipher_text = &cipher_bytes[12..];
+
+    let plaintext = cipher
+        .decrypt(nonce.into(), actual_cipher_text)
+        .map_err(|e| anyhow::anyhow!("Decryption failed: {}", e))?;
+
+    Ok(String::from_utf8(plaintext)?)
 }
 
 trait Sign {
