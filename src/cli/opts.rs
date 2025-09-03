@@ -4,6 +4,7 @@ use std::path::Path;
 use super::base64::Base64SubCommand;
 use super::csv::CsvSubCommand;
 use super::gen_pass::GenPassSubCommand;
+use super::jwt::JwtSubCommand;
 use super::text::TextSubCommand;
 
 #[derive(Debug, Parser)]
@@ -23,6 +24,8 @@ pub enum SubCommand {
     Base64(Base64SubCommand),
     #[command(subcommand)]
     Text(TextSubCommand),
+    #[command(subcommand)]
+    Jwt(JwtSubCommand),
 }
 
 pub fn validate_file_exists(file_path: &str) -> Result<String, String> {

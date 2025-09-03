@@ -2,6 +2,7 @@
 
 use clap::Parser;
 use rcli::Base64SubCommand;
+use rcli::JwtSubCommand;
 use rcli::Opts;
 use rcli::SubCommand;
 use rcli::TextSubCommand;
@@ -58,6 +59,14 @@ fn main() {
             TextSubCommand::Encrypt(opts) => {
                 let result = encrypt(opts).unwrap();
                 println!("{}", result);
+            }
+        },
+        SubCommand::Jwt(opts) => match opts {
+            JwtSubCommand::Sign(opts) => {
+                print!("{:?}", opts);
+            }
+            JwtSubCommand::Verify(opts) => {
+                print!("{:?}", opts);
             }
         },
     }
