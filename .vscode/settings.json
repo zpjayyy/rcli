@@ -1,8 +1,10 @@
 {
   "cSpell.words": [
     "CHACHA",
+    "chrono",
     "csprng",
     "dalek",
+    "jsonwebtoken",
     "pkcs",
     "rcli",
     "rngs",
@@ -10,5 +12,5 @@
     "spki",
     "urlsafe",
     "zxcvbn"
-  ]
+]
 }

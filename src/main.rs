@@ -12,6 +12,8 @@ use rcli::encode;
 use rcli::encrypt;
 use rcli::gen_password;
 use rcli::generate_key;
+use rcli::jwt_sign;
+use rcli::jwt_verify;
 use rcli::process_csv;
 use rcli::sign;
 use rcli::verify;
@@ -63,10 +65,12 @@ fn main() {
         },
         SubCommand::Jwt(opts) => match opts {
             JwtSubCommand::Sign(opts) => {
-                print!("{:?}", opts);
+                let result = jwt_sign(opts).unwrap();
+                println!("{}", result);
             }
             JwtSubCommand::Verify(opts) => {
-                print!("{:?}", opts);
+                let result = jwt_verify(opts).unwrap();
+                println!("{}", result);
             }
         },
     }
