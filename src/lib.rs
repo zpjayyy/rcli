@@ -17,6 +17,7 @@ pub use cli::base64::Base64SubCommand;
 pub use cli::csv::CsvSubCommand;
 pub use cli::csv::OutputFormat;
 pub use cli::gen_pass::GenPassSubCommand;
+pub use cli::http::HttpSubCommand;
 pub use cli::jwt::JwtSubCommand;
 pub use cli::opts::Opts;
 pub use cli::opts::SubCommand;

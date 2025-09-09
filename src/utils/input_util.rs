@@ -16,3 +16,14 @@ pub fn validate_output_exists(output: &str) -> Result<String> {
         Err(anyhow::anyhow!("Output path {} does not exist", output))
     }
 }
+
+pub fn validate_path(path: &str) -> Result<String> {
+    if path == "." || Path::new(path).exists() {
+        Ok(path.to_string())
+    } else {
+        Err(anyhow::anyhow!(
+            "Invalid path: {} (must be a valid directory or relative path)",
+            path.to_string()
+        ))
+    }
+}
