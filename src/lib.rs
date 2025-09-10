@@ -5,6 +5,7 @@ pub use process::base64::decode;
 pub use process::base64::encode;
 pub use process::csv_convert::process_csv;
 pub use process::gen_pass::gen_password;
+pub use process::http_serve::process_http_serve;
 pub use process::jwt::sign as jwt_sign;
 pub use process::jwt::verify as jwt_verify;
 pub use process::text::decrypt;

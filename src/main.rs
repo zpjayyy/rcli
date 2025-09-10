@@ -16,10 +16,12 @@ use rcli::generate_key;
 use rcli::jwt_sign;
 use rcli::jwt_verify;
 use rcli::process_csv;
+use rcli::process_http_serve;
 use rcli::sign;
 use rcli::verify;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let args = Opts::parse();
 
     match args.option {
@@ -77,6 +79,7 @@ fn main() {
         SubCommand::Http(opts) => match opts {
             HttpSubCommand::Serve(opts) => {
                 print!("{:?}", opts);
+                process_http_serve(opts).await.unwrap();
             }
         },
     }
