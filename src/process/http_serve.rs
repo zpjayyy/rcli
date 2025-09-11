@@ -4,9 +4,13 @@ use anyhow::Result;
 use axum::{
     Router,
     extract::{Path, State},
+    http::StatusCode,
     routing::get,
 };
-use tokio::{fs, net::TcpListener};
+use tokio::{
+    fs::{self},
+    net::TcpListener,
+};
 
 use crate::cli::http::ServeOpts;
 
@@ -28,7 +32,12 @@ pub async fn process_http_serve(opts: ServeOpts) -> Result<()> {
 async fn file_handler(
     State(http_state): State<Arc<HttpState>>,
     Path(path): Path<String>,
-) -> String {
+) -> (StatusCode, String) {
     let file_path = format!("{}/{}", http_state.path, path);
-    fs::read_to_string(file_path).await.unwrap()
+    let path_buf = std::path::Path::new(&file_path);
+    if !path_buf.exists() {
+        return (StatusCode::NOT_FOUND, "File not found".to_string());
+    }
+    let content = fs::read_to_string(file_path).await.unwrap();
+    (StatusCode::OK, content)
 }
