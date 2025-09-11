@@ -11,6 +11,7 @@ use tokio::{
     fs::{self},
     net::TcpListener,
 };
+use tower_http::services::ServeDir;
 
 use crate::cli::http::ServeOpts;
 
@@ -19,9 +20,12 @@ struct HttpState {
 }
 
 pub async fn process_http_serve(opts: ServeOpts) -> Result<()> {
-    let http_state = HttpState { path: opts.path };
+    let http_state = HttpState {
+        path: opts.path.clone(),
+    };
     let route = Router::new()
         .route("/{*path}", get(file_handler))
+        .nest_service("/tower", ServeDir::new(&opts.path))
         .with_state(Arc::new(http_state));
     let listener = TcpListener::bind(format!("{}:{}", "0.0.0.0", opts.port)).await?;
     axum::serve(listener, route).await?;
